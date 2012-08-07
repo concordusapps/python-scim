@@ -88,20 +88,31 @@ class Complex(Attribute, collections.MutableMapping):
     """
 
     def devitalize(self, mess):
+        ## a complex holds
         items = dict()
-        for name, item in inspect.getmembers(self.__class__):
-            if name in self.__dict__:
-                items[item.name] = item.devitalize(self.__dict__[name])
-
-        items = dict()
-        for key, item in inspect.getmembers(self.__class__):
-            exists = None
+        for name, master in inspect.getmembers(self.__class__):
+            attr = self.__dict__.get(name)
+            if attr is None:
+                continue
             try:
-                exists = key in mess.__dict__
-            except:
-                exists = key in mess
-            if exists:
-                items[item.name] = item.devitalize()
+                items[master._meta.name] = attr.devitalize()
+                continue
+            except AttributeError:
+                # its not an attribute object
+                pass
+
+            try:
+                flattened = []
+                for item in attr:
+                    flattened.append(item.devitalize())
+                items[master._meta.name] = flattened
+            except TypeError:
+                # Its not a list of items
+                # This should technically never happen
+                raise
+            except AttributeError:
+                # it is a list of items, but those items are not attribute objects
+                items[master._meta.name] = attr
         return items
 
 
