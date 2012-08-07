@@ -30,6 +30,7 @@
 from . import Schema
 from . import attributes
 from .attributes import Singular, Complex
+from collections import MutableSequence
 
 
 class Core(Schema):
@@ -71,12 +72,38 @@ class Core(Schema):
     ## The schemas attribute is a special case scenario which looks like it
     ## should be a multi-value attribute, but is actually simply a list of
     ## strings containing the schemas implemented in the request or response
-    class SchemaAttribute(attributes.Attribute):
+    class SchemaAttribute(attributes.Attribute, MutableSequence):
         """
         Special case attribute for the core schema
         """
         members = []
-        ## TODO: re-imlement the accessors
-        pass
+
+        def append(self, value):
+            return self.members.append(value)
+
+        def insert(self, index, value):
+            return self.members.insert(index, value)
+
+        def __len__(self):
+            return self.members.__len__()
+
+        def __getitem__(self, index):
+            return self.members.__getitem__(index)
+
+        def __setitem__(self, index, value):
+            return self.members.__setitem__(index, value)
+
+        def __delitem__(self, index):
+            return self.members.__delitem__(self, index)
+
+        def devitalize(self):
+            return self.members
 
     schemas = SchemaAttribute('schemas')
+
+    def __init__(self):
+        """
+        Add entries to schema listing
+        """
+        # add core schema specification to our schema listing
+        self.schemas.append('urn:scim:schemas:core:1.0')

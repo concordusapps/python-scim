@@ -1,13 +1,22 @@
 
+from .attributes import Attribute
+import inspect
 
-class Schema():
+
+class Schema(object):
     """
     This defines the base class for all schemas
     """
 
-    def encode(self):
-        """Exports a schema into an array"""
-        pass
+    def devitalize(self):
+        """Exports a schema into an array so that it may be encoded"""
+        # this will iterate over every SchemaProperty in the scheme and
+        # create an associative array that way
+        devitalized = dict()
+        for name, master in inspect.getmembers(self.__class__):
+            if name in self.__dict__:
+                devitalized[master.name] = master.devitalize(self.__dict__[name])
+        return devitalized
 
 
 class Extension(Schema):

@@ -26,11 +26,11 @@
            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
            SOFTWARE.
 """
-from . import Schema, Extension
+from . import core, Extension
 from .attributes import Singular, MultiValue, Complex
 
 
-class User(Schema):
+class User(core.Core):
     """
     Defines the schema mapping for a User
     """
