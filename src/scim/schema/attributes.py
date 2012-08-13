@@ -65,14 +65,6 @@ class Attribute(object):
         pass
 
 
-#    @abstractmethod
-#    def vitalize(self):
-#        """
-#        Takes a list/dict representation of an attribute tree and constructs
-#        an actual attribute tree out of it
-#        """
-
-
 class Singular(Attribute):
     """
     A singular name->value attribute
@@ -88,7 +80,7 @@ class Complex(Attribute, collections.MutableMapping):
     """
 
     def devitalize(self, mess):
-        ## a complex holds
+        ## a complex holds its attributes as members
         items = dict()
         for name, master in inspect.getmembers(self.__class__):
             attr = self.__dict__.get(name)
@@ -102,6 +94,7 @@ class Complex(Attribute, collections.MutableMapping):
                 pass
 
             try:
+                # is it a list of items?
                 flattened = []
                 for item in attr:
                     flattened.append(item.devitalize())
@@ -187,16 +180,22 @@ class Complex(Attribute, collections.MutableMapping):
 
 class MultiValue(Attribute):
 
+    ## MultiValues will never store data in themselves, so do not operate on
+    ## __class__.  For all intents and purposes, a MultiValue will be static
+    ## provided that the mess passed to devitalize is a list
     def devitalize(self, mess):
         primary = None
         items = list()
         for item in mess:
             itemdict = dict()
             for x in ['type', 'operation', 'display']:
-                getattr()
+                if getattr(item, x):
+                    itemdict[x] = getattr(item, x)
             if item.primary and not primary:
-                primary =
+                itemdict['primary'] = True
+                primary = True  # only a single one may be primary
         Attribute.devitalize(self)
+
 
 class MultiValueValue(Attribute):
     class Meta:
@@ -205,8 +204,6 @@ class MultiValueValue(Attribute):
         value = None
         operation = None
         display = ''
-    def getdynamic(self, key):
-        if key in self.__dict__
 
 
 #class MultiValueValue():
