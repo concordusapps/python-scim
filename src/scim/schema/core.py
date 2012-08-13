@@ -41,6 +41,9 @@ class Core(Schema):
         The complex attribute for metadata
         """
 
+        class Meta:
+            name = 'meta'
+
         ## The time that this entity was created
         created = Singular('created')
 

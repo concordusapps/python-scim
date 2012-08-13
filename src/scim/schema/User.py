@@ -40,6 +40,9 @@ class User(core.Core):
         Contains attributes for a fully expanded name
         """
 
+        class Meta:
+            name = 'name'
+
         ## The fully formatted name containing every other name attribute
         formatted = Singular('formatted')
 
@@ -128,6 +131,9 @@ class User(core.Core):
         """
         Contains address attributes
         """
+
+        class Meta:
+            name = 'addresses'
 
         ## The fully formatted address
         formatted = Singular('formatted')
