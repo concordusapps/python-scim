@@ -86,4 +86,4 @@ class Core(Schema):
         Add entries to schema listing
         """
         # add core schema specification to our schema listing
-        self.schemas.append('urn:scim:schemas:core:1.0')
+        self.schemas = ['urn:scim:schemas:core:1.0']
