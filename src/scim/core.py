@@ -75,9 +75,10 @@ class Core(Complex):
     ## strings containing the schemas implemented in the request or response
     schemas = Singular('schemas')
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         Add entries to schema listing
         """
+        super(Core, self).__init__(*args, **kwargs)
         # add core schema specification to our schema listing
         self.schemas = ['urn:scim:schemas:core:1.0']
