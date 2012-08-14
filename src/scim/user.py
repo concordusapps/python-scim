@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-""" \file "scim/schema/core.py"
-\brief "Defines the core scim schema and all its attributes"
+""" \file "scim/client/user.py"
+\brief "Provides ways of interacting with a user endpoint"
 
 \author Erich Healy (CactusCommander) ErichRHealy@gmail.com
 
@@ -26,7 +26,11 @@
            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
            SOFTWARE.
 """
+import requests
 from . import attributes
+
+
+endpoint_format = '{}/Users/{}'
 
 
 class User(attributes.Complex):
@@ -229,3 +233,42 @@ class User(attributes.Complex):
 #    # TODO: allow stuff like so:
 #    # x.enterprise.manager = Manager(id=32423, name="dsfsdf")
 #    manager = Manager('manager')
+
+
+
+def get(endpoint, identifier):
+    """BANANA"""
+    response = requests.get(endpoint_format.format(endpoint, identifier))
+    response.raise_for_status()
+    return User.deserialize(response.text)
+
+
+def post(endpoint, data):
+    """BANANA"""
+    data = User.serialize(data)
+    response = requests.post(endpoint_format.format(endpoint, ''))
+    response.raise_for_status()
+    return User.deserialize(response.text)
+
+
+def put(endpoint, identifier, data):
+    """BANANA"""
+    data = User.serialize(data)
+    response = requests.put(
+        endpoint_format.format(endpoint, identifier),
+        data=data
+    )
+    response.raise_for_status()
+    return User.deserialize(response.text)
+
+
+def delete(endpoint, identifier):
+    """BANANA"""
+    response = requests.delete(endpoint_format.format(endpoint, identifier))
+    response.raise_for_status
+    return User.deserialize(response.text)
+
+
+def patch(endpoint, identifier, data):
+    """BANANA"""
+    raise NotImplementedError('Method not implemented')
