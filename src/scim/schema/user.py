@@ -108,7 +108,7 @@ class User(attributes.Complex):
 
         def __init__(self, value=None, **kwargs):
             """TODO"""
-            kwargs.update("value", value)
+            kwargs["value"] = value
             attributes.MultiValue.__init__(self, **kwargs)
 
     class Email(SimpleMultiValue):
