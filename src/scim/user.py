@@ -236,7 +236,6 @@ class User(Core):
 #    manager = Manager('manager')
 
 
-
 def get(endpoint, identifier):
     """BANANA"""
     response = requests.get(endpoint_format.format(endpoint, identifier))
@@ -266,10 +265,15 @@ def put(endpoint, identifier, data):
 def delete(endpoint, identifier):
     """BANANA"""
     response = requests.delete(endpoint_format.format(endpoint, identifier))
-    response.raise_for_status
+    response.raise_for_status()
     return User.deserialize(response.text)
 
 
 def patch(endpoint, identifier, data):
     """BANANA"""
-    raise NotImplementedError('Method not implemented')
+    response = requests.patch(
+        endpoint_format.format(endpoint, identifier),
+        data=data,
+    )
+    response.raise_for_status()
+    return User.deserialize(response.text)
