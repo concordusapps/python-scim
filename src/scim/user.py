@@ -28,12 +28,13 @@
 """
 import requests
 from . import attributes
+from .core import Core
 
 
 endpoint_format = '{}/Users/{}'
 
 
-class User(attributes.Complex):
+class User(Core):
     """Defines the schema mapping for a User.
     """
 

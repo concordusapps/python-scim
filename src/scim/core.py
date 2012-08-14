@@ -27,12 +27,11 @@
            SOFTWARE.
 """
 
-from . import Schema
 from . import attributes
 from .attributes import Singular, Complex
 
 
-class Core(Schema):
+class Core(Complex):
     """
     Defines the core scim schema
     """
