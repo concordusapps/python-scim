@@ -5,6 +5,9 @@ class Request(object):
     """Defines a basic request object
     """
 
+    ## Verbs supported by the request object
+    supported_verbs = []
+
     def __init__(self, **kwargs):
         """set random default arguments
         \var verb
@@ -36,7 +39,7 @@ class Request(object):
             if not item in self.__dict__:
                 raise AssertionError('Missng required data: {}'.format(item))
         verb = self.verb.lower()
-        if not verb in ['get', 'post', 'put', 'delete', 'patch']:
+        if not verb in self.supported_verbs:
             raise AssertionError('Unsupported verb: {}'.format(verb))
         # verify format:
         if not self.format.lower() in ['json']:
