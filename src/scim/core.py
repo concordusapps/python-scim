@@ -73,15 +73,7 @@ class Core(Complex):
     ## The schemas attribute is a special case scenario which looks like it
     ## should be a multi-value attribute, but is actually simply a list of
     ## strings containing the schemas implemented in the request or response
-    class SchemaAttribute(attributes.Singular):
-        """
-        Special case attribute for the core schema
-        """
-
-        def serialize(self, mess):
-            return mess
-
-    schemas = SchemaAttribute('schemas')
+    schemas = Singular('schemas')
 
     def __init__(self):
         """
