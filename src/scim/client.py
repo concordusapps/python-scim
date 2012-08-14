@@ -1,7 +1,5 @@
 import requests
 import abc
-import json
-
 from .schema import user
 
 
