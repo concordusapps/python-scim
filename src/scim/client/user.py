@@ -34,12 +34,14 @@ endpoint_format = '{}/Users/{}'
 
 
 def get(endpoint, identifier):
+    """BANANA"""
     response = requests.get(endpoint_format.format(endpoint, identifier))
     response.raise_for_status()
     return User.deserialize(response.text)
 
 
 def post(endpoint, data):
+    """BANANA"""
     data = User.serialize(data)
     response = requests.post(endpoint_format.format(endpoint, ''))
     response.raise_for_status()
@@ -47,6 +49,7 @@ def post(endpoint, data):
 
 
 def put(endpoint, identifier, data):
+    """BANANA"""
     data = User.serialize(data)
     response = requests.put(
         endpoint_format.format(endpoint, identifier),
@@ -57,6 +60,12 @@ def put(endpoint, identifier, data):
 
 
 def delete(endpoint, identifier):
+    """BANANA"""
     response = requests.delete(endpoint_format.format(endpoint, identifier))
     response.raise_for_status
     return User.deserialize(response.text)
+
+
+def patch(endpoint, identifier, data):
+    """BANANA"""
+    raise NotImplementedError('Method not implemented')
