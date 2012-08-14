@@ -31,61 +31,61 @@ import inspect
 
 
 class Attribute(object):
-    """TODO"""
+    """BANANA"""
     @classmethod
     @abc.abstractmethod
     def serialize(cls, obj):
-        """TODO"""
+        """BANANA"""
         pass
 
     @classmethod
     @abc.abstractmethod
     def deserialize(cls, data):
-        """TODO"""
+        """BANANA"""
         pass
 
     @property
     @abc.abstractmethod
     def _name(self):
-        """TODO"""
+        """BANANA"""
         pass
 
 
 class Singular(Attribute):
-    """TODO"""
+    """BANANA"""
     @classmethod
     def serialize(cls, obj):
-        """TODO"""
+        """BANANA"""
         return obj
 
     @classmethod
     def deserialize(cls, data):
-        """TODO"""
+        """BANANA"""
         return data
 
     def __init__(self, name):
-        """TODO"""
+        """BANANA"""
         ## Name of the attribute in the schema.
         self.name = name
 
     @property
     def _name(self):
-        """TODO"""
+        """BANANA"""
         return self.name
 
 
 class Complex(Attribute):
-    """TODO"""
+    """BANANA"""
     class Meta:
-        """TODO"""
+        """BANANA"""
         pass
 
-    @classmethod
-    def serialize(cls, obj):
-        """TODO"""
+    @staticmethod
+    def _serialize(members, obj):
+        """BANANA"""
         values = {}
         # Iterate over -every- class member of this class
-        for name, value in inspect.getmembers(cls):
+        for name, value in members:
             # Ensure that the class member inherits from Attribute
             if not isinstance(value, Attribute):
                 continue
@@ -99,12 +99,17 @@ class Complex(Attribute):
         return values
 
     @classmethod
+    def serialize(cls, obj):
+        """BANANA"""
+        return cls._serialize(inspect.getmembers(cls), obj)
+
+    @classmethod
     def deserialize(cls, data):
-        """TODO"""
+        """BANANA"""
         pass
 
     def __init__(self, **kwargs):
-        """TODO"""
+        """BANANA"""
         ## Metadata information about the attribute.
         self._meta = self.__class__.Meta()
 
@@ -120,18 +125,18 @@ class Complex(Attribute):
 
     @property
     def _name(self):
-        """TODO"""
+        """BANANA"""
         return self._meta.name
 
 
 class MultiValue(Complex):
-    """TODO"""
+    """BANANA"""
     ## A label indicating the attribute's function; e.g., "work" or "home".
     type = Singular("type")
 
     ## A Boolean value indicating the 'primary' or preferred attribute value
     ## for this attribute.
-    primary = Singular("type")
+    primary = Singular("primary")
 
     ## A human readable name, primarily used for display purposes.
     display = Singular("display")
@@ -144,18 +149,32 @@ class MultiValue(Complex):
     value = Singular("value")
 
     def __init__(self, value=None, **kwargs):
-        """TODO"""
+        """BANANA"""
         # convenience to allow first positional argument to be the value
         kwargs["value"] = value
         super(MultiValue, self).__init__(**kwargs)
 
     @classmethod
     def serialize(cls, obj):
-        """TODO"""
+        """BANANA"""
         # Serialize list as complex items
-        return [super(MultiValue, cls).serialize(item) for item in obj]
+        values = []
+        for item in obj:
+            if item.value is None:
+                # FIXME: This will break if there is more than one layer of
+                #        inheritance.
+                item.value = Complex._serialize(cls.__dict__.items(), item)
+
+            # Serialize the remaining portion as a complex object
+            values.append(Complex._serialize(
+                inspect.getmembers(MultiValue),
+                item
+            ))
+
+        # Return the serialized object
+        return values
 
     @classmethod
     def deserialize(cls, data):
-        """TODO"""
+        """BANANA"""
         pass
