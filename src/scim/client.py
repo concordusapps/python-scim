@@ -103,5 +103,5 @@ class User(Request):
         return user.User.deserialize(obj)
 
     @staticmethod
-    def seriealize(obj):
+    def serialize(obj):
         return user.User.serialize(obj)
