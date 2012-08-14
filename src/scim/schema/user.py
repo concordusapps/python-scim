@@ -100,18 +100,7 @@ class User(attributes.Complex):
     # Multi-value attributes.  These are pluralized to make it more obvious
     # that these are multi-value attribues
 
-    class SimpleMultiValue(attributes.MultiValue):
-        """TODO"""
-
-        ## E-mail addresses for the User.
-        value = attributes.Singular('value')
-
-        def __init__(self, value=None, **kwargs):
-            """TODO"""
-            kwargs["value"] = value
-            attributes.MultiValue.__init__(self, **kwargs)
-
-    class Email(SimpleMultiValue):
+    class Email(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'emails'
@@ -119,7 +108,7 @@ class User(attributes.Complex):
     ## Emails the user has registered with them
     emails = Email()
 
-    class PhoneNumber(SimpleMultiValue):
+    class PhoneNumber(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'phoneNumbers'
@@ -127,7 +116,7 @@ class User(attributes.Complex):
     ## Phone numbers for the User.
     phones = PhoneNumber()
 
-    class Messanger(SimpleMultiValue):
+    class Messanger(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'ims'
@@ -135,7 +124,7 @@ class User(attributes.Complex):
     ## Instant messaging address for the User.
     messengers = Messanger()
 
-    class Photo(SimpleMultiValue):
+    class Photo(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'photos'
@@ -147,7 +136,7 @@ class User(attributes.Complex):
     ## membership, nested groups, or dynamically calculated.
     # groups =
 
-    class Role(SimpleMultiValue):
+    class Role(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'roles'
@@ -156,7 +145,7 @@ class User(attributes.Complex):
     ## User is; e.g., 'Student', "Faculty".
     roles = Role()
 
-    class Entitlement(SimpleMultiValue):
+    class Entitlement(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'entitlements'
@@ -164,7 +153,7 @@ class User(attributes.Complex):
     ## A list of entitlements for the User that represent a thing the User has.
     entitlements = Entitlement()
 
-    class Certificate(SimpleMultiValue):
+    class Certificate(attributes.MultiValue):
         """TODO"""
         class Meta:
             name = 'x509Certificates'

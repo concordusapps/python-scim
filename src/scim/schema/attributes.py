@@ -140,6 +140,15 @@ class MultiValue(Complex):
     ## a PATCH request.
     operation = Singular("type")
 
+    ## The value of the specific attribute
+    value = Singular("value")
+
+    def __init__(self, value=None, **kwargs):
+        """TODO"""
+        # convenience to allow first positional argument to be the value
+        kwargs["value"] = value
+        super(MultiValue, self).__init__(**kwargs)
+
     @classmethod
     def serialize(cls, obj):
         """TODO"""
