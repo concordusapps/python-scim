@@ -28,6 +28,10 @@
 """
 from .core import Core
 from .attributes import Singular, MultiValue
+import requests
+
+
+endpoint_format = '{}/Groups/{}'
 
 
 class Group(Core):
@@ -46,3 +50,46 @@ class Group(Core):
     # the type attribute of a member is read-only.  the idea being to allow
     # nested groups
     members = Members()
+
+
+def get(endpoint, identifier):
+    """BANANA"""
+    response = requests.get(endpoint_format.format(endpoint, identifier))
+    response.raise_for_status()
+    return Group.deserialize(response.text)
+
+
+def post(endpoint, data):
+    """BANANA"""
+    response = requests.post(endpoint_format.format(endpoint, ''), data=data)
+    response.raise_for_status()
+    return Group.deserialize(response.text)
+
+
+def put(endpoint, identifier, data):
+    """BANANA"""
+    data = Group.serialize(data)
+    response = requests.put(
+        endpoint_format.format(endpoint, identifier),
+        data=data
+    )
+    response.raise_for_status()
+    return Group.deserialize(response.text)
+
+
+def patch(endpoint, identifier, data):
+    """BANANA"""
+    data = Group.serialize(data)
+    response = requests.patch(
+        endpoint_format.format(endpoint, identifier),
+        data=data
+    )
+    response.raise_for_status()
+    return Group.deserialize(response.text)
+
+
+def delete(endpoint, identifier):
+    """BANANA"""
+    response = requests.delete(endpoint_format.format(endpoint, identifier))
+    response.raise_for_status()
+    return Group.serialize(response.text)
