@@ -110,23 +110,13 @@ class Complex(Attribute):
 
     def __init__(self, **kwargs):
         """BANANA"""
-        ## Metadata information about the attribute.
-        self._meta = self.__class__.Meta()
-
         # Parse arguments
-        for key, value in kwargs.items():
-            segments = key.split('__')
-            if segments[0] == 'meta':
-                # Is a metadata argument; set in _meta
-                setattr(self._meta, segments[1], value)
-            else:
-                # Is a normal argument; set in self
-                self.__dict__[key] = value
+        self.__dict__.update(**kwargs)
 
     @property
     def _name(self):
         """BANANA"""
-        return self._meta.name
+        return self.__class__.Meta.name
 
 
 class MultiValue(Complex):
