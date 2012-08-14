@@ -2,6 +2,7 @@ import requests
 import abc
 import json
 
+from .schema import user
 
 
 class Request(object):
@@ -75,3 +76,32 @@ class Request(object):
         response.raise_for_status()
 
         self.response = self.deserialize(response.text)
+
+
+class User(Request):
+    """Defines a request to a user interface
+    """
+
+    supported_verbs = ['get', 'post', 'put', 'patch', 'delete']
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+
+        if not self.verb == 'post':
+            # In non-POST operations, the url must have the user id tacked on to
+            # the end.
+            # Ex: http://example.com/Users/2819c223-7f76-453a-919d-413861904646
+            url = Request.prep_url(self)
+            url_format = '{}{}' if url[-1:] == '/' else '{}/{}'
+
+            # In user requests, the user ID is stored in data.id
+            # TODO: how do ExternalIDs handle this?
+            self.url = url_format.format(url, self.data.id)
+
+    @staticmethod
+    def deserialize(obj):
+        return user.User.deserialize(obj)
+
+    @staticmethod
+    def seriealize(obj):
+        return user.User.serialize(obj)
