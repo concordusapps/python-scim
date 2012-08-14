@@ -27,22 +27,26 @@
            SOFTWARE.
 """
 import abc
-import collections
 import inspect
-import json
 
 
 class Attribute(object):
     """TODO"""
-    @abc.abstractmethod
     @classmethod
-    def serialize(self, obj):
+    @abc.abstractmethod
+    def serialize(cls, obj):
         """TODO"""
         pass
 
-    @abc.abstractmethod
     @classmethod
-    def deserialize(self, data, method='json'):
+    @abc.abstractmethod
+    def deserialize(cls, data):
+        """TODO"""
+        pass
+
+    @property
+    @abc.abstractmethod
+    def _name(self):
         """TODO"""
         pass
 
@@ -50,12 +54,12 @@ class Attribute(object):
 class Singular(Attribute):
     """TODO"""
     @classmethod
-    def serialize(self, obj):
+    def serialize(cls, obj):
         """TODO"""
-        return str(obj)
+        return obj
 
     @classmethod
-    def deserialize(self, data):
+    def deserialize(cls, data):
         """TODO"""
         return data
 
@@ -63,6 +67,11 @@ class Singular(Attribute):
         """TODO"""
         ## Name of the attribute in the schema.
         self.name = name
+
+    @property
+    def _name(self):
+        """TODO"""
+        return self.name
 
 
 class Complex(Attribute):
@@ -72,14 +81,27 @@ class Complex(Attribute):
         pass
 
     @classmethod
-    def serialize(self, obj):
+    def serialize(cls, obj):
         """TODO"""
-        return str(obj)
+        values = {}
+        # Iterate over -every- class member of this class
+        for name, value in inspect.getmembers(cls):
+            # Ensure that the class member inherits from Attribute
+            if not isinstance(value, Attribute):
+                continue
+
+            # Was this member provided in the instance dictionary ?
+            if name in obj.__dict__:
+                # Yes; serialize it and update it in the resultant dictionary
+                values[value._name] = value.serialize(obj.__dict__[name])
+
+        # Return serialized values
+        return values
 
     @classmethod
-    def deserialize(self, data):
+    def deserialize(cls, data):
         """TODO"""
-        return data
+        pass
 
     def __init__(self, **kwargs):
         """TODO"""
@@ -87,7 +109,7 @@ class Complex(Attribute):
         self._meta = self.__class__.Meta()
 
         # Parse arguments
-        for key, value in kwargs:
+        for key, value in kwargs.items():
             segments = key.split('__')
             if segments[0] == 'meta':
                 # Is a metadata argument; set in _meta
@@ -96,75 +118,35 @@ class Complex(Attribute):
                 # Is a normal argument; set in self
                 self.__dict__[key] = value
 
+    @property
+    def _name(self):
+        """TODO"""
+        return self._meta.name
 
 
-#class Singular(Attribute):
-#    """
-#    A singular name->value attribute
-#    """
-#
-#    def devitalize(self, mess):
-#        return mess
-#
-#
-#class Complex(Attribute, collections.MutableMapping):
-#    """
-#    A complex attribute comprising of many singular attributes
-#    """
-#
-#    def devitalize(self, mess):
-#        ## a complex holds its attributes as members
-#        items = dict()
-#        for name, master in inspect.getmembers(self.__class__):
-#            attr = self.__dict__.get(name)
-#            if attr is None:
-#                continue
-#            try:
-#                items[master._meta.name] = attr.devitalize()
-#                continue
-#            except AttributeError:
-#                # its not an attribute object
-#                pass
-#
-#            try:
-#                # is it a list of items?
-#                flattened = []
-#                for item in attr:
-#                    flattened.append(item.devitalize())
-#                items[master._meta.name] = flattened
-#            except TypeError:
-#                # Its not a list of items
-#                # This should technically never happen
-#                raise
-#            except AttributeError:
-#                # it is a list of items, but those items are not attribute objects
-#                items[master._meta.name] = attr
-#        return items
-#
-#
-#class MultiValue(Attribute):
-#
-#    ## MultiValues will never store data in themselves, so do not operate on
-#    ## __class__.  For all intents and purposes, a MultiValue will be static
-#    ## provided that the mess passed to devitalize is a list
-#    def devitalize(self, mess):
-#        primary = None
-#        items = list()
-#        for item in mess:
-#            itemdict = dict()
-#            for x in ['type', 'operation', 'display']:
-#                if getattr(item, x):
-#                    itemdict[x] = getattr(item, x)
-#            if item.primary and not primary:
-#                itemdict['primary'] = True
-#                primary = True  # only a single one may be primary
-#        Attribute.devitalize(self)
-#
-#
-#class MultiValueValue(Attribute):
-#    class Meta:
-#        type = None
-#        primary = False
-#        value = None
-#        operation = None
-#        display = ''
+class MultiValue(Complex):
+    """TODO"""
+    ## A label indicating the attribute's function; e.g., "work" or "home".
+    type = Singular("type")
+
+    ## A Boolean value indicating the 'primary' or preferred attribute value
+    ## for this attribute.
+    primary = Singular("type")
+
+    ## A human readable name, primarily used for display purposes.
+    display = Singular("display")
+
+    ## The operation to perform on the multi-valued attribute during
+    ## a PATCH request.
+    operation = Singular("type")
+
+    @classmethod
+    def serialize(cls, obj):
+        """TODO"""
+        # Serialize list as complex items
+        return [super(MultiValue, cls).serialize(item) for item in obj]
+
+    @classmethod
+    def deserialize(cls, data):
+        """TODO"""
+        pass

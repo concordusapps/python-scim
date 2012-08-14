@@ -26,172 +26,217 @@
            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
            SOFTWARE.
 """
-from . import core, Extension
-from .attributes import Singular, MultiValue, Complex
+from . import attributes
 
 
-class User(core.Core):
-    """
-    Defines the schema mapping for a User
+class User(attributes.Complex):
+    """Defines the schema mapping for a User.
     """
 
-    class Name(Complex):
-        """
-        Contains attributes for a fully expanded name
+    class Name(attributes.Complex):
+        """Contains attributes for a fully expanded name.
         """
 
         class Meta:
             name = 'name'
 
         ## The fully formatted name containing every other name attribute
-        formatted = Singular('formatted')
+        formatted = attributes.Singular('formatted')
 
         ## The family name for the user.  Sometimes referred to as one's Last
         ## Name
-        family = Singular('familyName')
+        family = attributes.Singular('familyName')
 
         ## The user's given name.  Sometimes referred to as one's First Name
-        given = Singular('givenName')
+        given = attributes.Singular('givenName')
 
         ## The user's middle name
-        middle = Singular('middleName')
+        middle = attributes.Singular('middleName')
 
         ## Any honorific prefixes someone might have.  Ex: Dr., Prof., Mr., etc
-        prefix = Singular('honorificPrefix')
+        prefix = attributes.Singular('honorificPrefix')
 
         ## Honorific suffixes.  Ex: III, Jr., Sr., etc.
-        suffix = Singular('honorificSuffix')
+        suffix = attributes.Singular('honorificSuffix')
 
     ## The username/login name represented in the system
-    username = Singular('userName')
+    username = attributes.Singular('userName')
 
     ## User's proper name
-    name = Name('name')
+    name = Name()
 
     ## formatted name ready for display.  This should be the primary way that a
     ## user is displayed
-    display = Singular('displayName')
+    display = attributes.Singular('displayName')
 
     ## User's nickname.  This doesn't have to be the same as username
     ## Ex: name = james -> display = jim
+    nick_name = attributes.Singular('nickName')
 
     ## Fully qualified URL pointing to user's profile
-    profile = Singular('profileUrl')
+    profile = attributes.Singular('profileUrl')
 
     ## User's proper title.  Ex: Professor, Vice President
-    title = Singular('title')
+    title = attributes.Singular('title')
 
-    ## identifies what sort of user this is.  Ex: Contractor, Employee, etc.
-    user_type = Singular('userType')
+    ## Identifies what sort of user this is.  Ex: Contractor, Employee, etc.
+    user_type = attributes.Singular('userType')
 
-    ## concatination of ISO 639-1, an underscore, and ISO 3166-1.  Ex: en_US
-    language = Singular('preferredLanguage')
+    ## Concatination of ISO 639-1, an underscore, and ISO 3166-1.  Ex: en_US
+    language = attributes.Singular('preferredLanguage')
 
-    ## concatination of ISO 639-1, an underscore, and ISO 3166-1.  Ex: en_US
-    locale = Singular('locale')
+    ## Concatination of ISO 639-1, an underscore, and ISO 3166-1.  Ex: en_US
+    locale = attributes.Singular('locale')
 
     ## Timezone according to tz/IANA database.  Ex: America/Los_Angeles
-    timezone = Singular('timezone')
+    timezone = attributes.Singular('timezone')
 
     ## Boolean flag denoting user's admin status.  True means user is admin.
-    admin = Singular('status')
+    admin = attributes.Singular('status')
 
     ## Password field. This really only ought to be set during a POST operation
-    password = Singular('password')
+    password = attributes.Singular('password')
 
     # Multi-value attributes.  These are pluralized to make it more obvious
     # that these are multi-value attribues
 
+    class SimpleMultiValue(attributes.MultiValue):
+        """TODO"""
+
+        ## E-mail addresses for the User.
+        value = attributes.Singular('value')
+
+        def __init__(self, value=None, **kwargs):
+            """TODO"""
+            kwargs.update("value", value)
+            attributes.MultiValue.__init__(self, **kwargs)
+
+    class Email(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'emails'
+
     ## Emails the user has registered with them
-    emails = MultiValue('emails')
+    emails = Email()
 
-    ## phone numbers!
-    phones = MultiValue('phoneNumbers')
+    class PhoneNumber(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'phoneNumbers'
 
-    ## usernames for instant messaging services
-    messengers = MultiValue('ims')
+    ## Phone numbers for the User.
+    phones = PhoneNumber()
 
-    ## urls for photos of the user.  Should point directly to an image
-    photos = MultiValue('photos')
+    class Messanger(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'ims'
 
-    ## Groups that the user is in
-    groups = MultiValue('groups')
+    ## Instant messaging address for the User.
+    messengers = Messanger()
 
-    ## Roles that the user has
-    roles = MultiValue('roles')
+    class Photo(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'photos'
 
-    ## Entitlements that the user has
-    entitlements = MultiValue('entitlements')
+    ## Instant messaging address for the User.
+    photos = Photo()
 
-    ## Certificates belonging to the user
-    certs = MultiValue('x509Certificates')
+    ## A list of groups that the user belongs to, either thorough direct
+    ## membership, nested groups, or dynamically calculated.
+    # groups =
 
-    ## physical addresses belonging to the user
-    class Address(Complex):
-        """
-        Contains address attributes
+    class Role(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'roles'
+
+    ## A list of roles for the User that collectively represent who the
+    ## User is; e.g., 'Student', "Faculty".
+    roles = Role()
+
+    class Entitlement(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'entitlements'
+
+    ## A list of entitlements for the User that represent a thing the User has.
+    entitlements = Entitlement()
+
+    class Certificate(SimpleMultiValue):
+        """TODO"""
+        class Meta:
+            name = 'x509Certificates'
+
+    ## A list of x.509 certificates issued to the User.
+    certs = Certificate()
+
+    class Address(attributes.MultiValue):
+        """TODO
         """
 
         class Meta:
             name = 'addresses'
 
-        ## The fully formatted address
-        formatted = Singular('formatted')
+        ## The fully formatted address.
+        formatted = attributes.Singular('formatted')
 
         ## Street, house number, apartment number, po box, etc.
-        street = Singular('streetAddress')
+        street = attributes.Singular('streetAddress')
 
-        ## City or locality that the location is in
-        city = Singular('locality')
+        ## City or locality that the location is in.
+        locality = attributes.Singular('locality')
 
-        ## state or region that the location is in
-        state = Singular('region')
+        ## State or region that the location is in.
+        region = attributes.Singular('region')
 
-        ## Zip or postal code
-        zip = Singular('postalCode')
+        ## Zip or postal code.
+        code = attributes.Singular('postalCode')
 
         ## Country that the address is in in ISO 3166-1 format
-        country = Singular('country')
+        country = attributes.Singular('country')
 
-    addresses = MultiValue('addresses')
+    ## A physical mailing address for this User.
+    addresses = Address()
 
 
-class Enterprise(Extension):
-    """
-    Defines enterprise user extensions
-    schema: urn:scim:schemas:extension:enterprise:1.0
-    """
-
-    class Manager(Complex):
-        """
-        User's Manager's primary key and name
-        """
-
-        class Meta:
-            name = 'manager'
-
-        ## Primary Key for manager
-        id = Singular('managerId')
-
-        ## Manager's name, for convenience purposes
-        name = Singular('displayName')
-
-    ## User's Employee number
-    employee_id = Singular('employeeNumber')
-
-    ## User's Cost Center (?)
-    cost_center = Singular('costCenter')
-
-    ## Organization
-    organization = Singular('organization')
-
-    ## Division of organizations
-    division = Singular('division')
-
-    ## Department of division
-    department = Singular('department')
-
-    ## User's manager
-    # TODO: allow stuff like so:
-    # x.enterprise.manager = Manager(id=32423, name="dsfsdf")
-    manager = Manager('manager')
+#class Enterprise(Extension):
+#    """
+#    Defines enterprise user extensions
+#    schema: urn:scim:schemas:extension:enterprise:1.0
+#    """
+#
+#    class Manager(Complex):
+#        """
+#        User's Manager's primary key and name
+#        """
+#
+#        class Meta:
+#            name = 'manager'
+#
+#        ## Primary Key for manager
+#        id = Singular('managerId')
+#
+#        ## Manager's name, for convenience purposes
+#        name = Singular('displayName')
+#
+#    ## User's Employee number
+#    employee_id = Singular('employeeNumber')
+#
+#    ## User's Cost Center (?)
+#    cost_center = Singular('costCenter')
+#
+#    ## Organization
+#    organization = Singular('organization')
+#
+#    ## Division of organizations
+#    division = Singular('division')
+#
+#    ## Department of division
+#    department = Singular('department')
+#
+#    ## User's manager
+#    # TODO: allow stuff like so:
+#    # x.enterprise.manager = Manager(id=32423, name="dsfsdf")
+#    manager = Manager('manager')
