@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-""" \file "scim/schema/attributes.py"
-\brief "defining the different types of attributes
+""" \file scim/schema/attributes.py
+\brief Defines the different types of attributes.
 
 \author Erich Healy (CactusCommander) ErichRHealy@gmail.com
 
@@ -26,226 +26,145 @@
            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
            SOFTWARE.
 """
+import abc
 import collections
-import types
-from abc import abstractmethod
 import inspect
+import json
 
 
 class Attribute(object):
-    _meta = None
-
-    class Meta:
-        """
-        contains metadata about the attribute
-        """
+    """TODO"""
+    @abc.abstractmethod
+    @classmethod
+    def serialize(self, obj):
+        """TODO"""
         pass
 
-    def __init__(self, **kwargs):
-        # set metadata
-        self._meta = self.__class__.Meta()
-
-        # parse extra metadata arguments
-        for key, value in kwargs:
-            segments = key.split('__')
-            if segments[0] == 'meta':
-                setattr(self._meta, segments[1], value)
-            else:
-                self.__dict__[key] = value
-
-        # make sure we actually got a name?
-        if self._meta['name'] is not None:
-            raise ValueError('Attribute requires name')
-
-    @abstractmethod
-    def devitalize(self):
-        """
-        This returns a list/dict representation of the attribute
-        """
+    @abc.abstractmethod
+    @classmethod
+    def deserialize(self, data, method='json'):
+        """TODO"""
         pass
 
 
 class Singular(Attribute):
-    """
-    A singular name->value attribute
-    """
+    """TODO"""
+    @classmethod
+    def serialize(self, obj):
+        """TODO"""
+        return str(obj)
 
-    def devitalize(self, mess):
-        return mess
+    @classmethod
+    def deserialize(self, data):
+        """TODO"""
+        return data
 
-
-class Complex(Attribute, collections.MutableMapping):
-    """
-    A complex attribute comprising of many singular attributes
-    """
-
-    def devitalize(self, mess):
-        ## a complex holds its attributes as members
-        items = dict()
-        for name, master in inspect.getmembers(self.__class__):
-            attr = self.__dict__.get(name)
-            if attr is None:
-                continue
-            try:
-                items[master._meta.name] = attr.devitalize()
-                continue
-            except AttributeError:
-                # its not an attribute object
-                pass
-
-            try:
-                # is it a list of items?
-                flattened = []
-                for item in attr:
-                    flattened.append(item.devitalize())
-                items[master._meta.name] = flattened
-            except TypeError:
-                # Its not a list of items
-                # This should technically never happen
-                raise
-            except AttributeError:
-                # it is a list of items, but those items are not attribute objects
-                items[master._meta.name] = attr
-        return items
+    def __init__(self, name):
+        """TODO"""
+        ## Name of the attribute in the schema.
+        self.name = name
 
 
+class Complex(Attribute):
+    """TODO"""
+    class Meta:
+        """TODO"""
+        pass
 
-#class MultiValue(Attribute, collections.MutableSequence):
+    @classmethod
+    def serialize(self, obj):
+        """TODO"""
+        return str(obj)
+
+    @classmethod
+    def deserialize(self, data):
+        """TODO"""
+        return data
+
+    def __init__(self, **kwargs):
+        """TODO"""
+        ## Metadata information about the attribute.
+        self._meta = self.__class__.Meta()
+
+        # Parse arguments
+        for key, value in kwargs:
+            segments = key.split('__')
+            if segments[0] == 'meta':
+                # Is a metadata argument; set in _meta
+                setattr(self._meta, segments[1], value)
+            else:
+                # Is a normal argument; set in self
+                self.__dict__[key] = value
+
+
+
+#class Singular(Attribute):
 #    """
-#    A multivalue attribute comprising of many same-typed attributes
+#    A singular name->value attribute
 #    """
-#
-#    ## Contains the index of the primary attribute, if one exists
-#    primary = None
-#    members = []
-#
-#    def _memberize(self, val):
-#        """
-#        checks if val is an instance of MultiValueValue and wrapps it in an
-#        instance of one if it isn't
-#        """
-#        return val
-##        if isinstance(val, MultiValueValue):
-##            return val
-##        else:
-##            return MultiValueValue(val)
-#
-#    def primary_member(self, index, primary=None):
-#        if primary:
-#            self.primary = index
-#        return self.primary
-#
-#    def __getitem__(self, index):
-#        return self.members[index]
-#
-#    def __setitem__(self, index, value):
-#        self.members[index] = self._memberize(value)
-#        return self.members[index]
-#
-#    def __delitem__(self, index):
-#        if self.primary == index:
-#            self.primary = None
-#        return self.members.__delitem__(index)
-#
-#    def insert(self, index, value):
-#        return self.members.insert(index, self._memberize(value))
-#
-#    def __len__(self):
-#        return self.members.__len__()
-#
-#    def __contains__(self, value):
-#        for item in self.members:
-#            if item.value == value:
-#                return True
-#        return False
-#
-#    def __iter__(self):
-#        return self.members.__iter__()
-#
-#    def __reversed__(self):
-#        return self.members.__reversed__()
-#
-#    def append(self, value):
-#        return self.members.append(self._memberize(value))
 #
 #    def devitalize(self, mess):
-#        """
-#        formats construct into a sequence for encoding
-#        """
-#        if not isinstance(mess, ListType):
-#            raise AttributeError('{} is not of type List'.format(mess))
-#        # TODO: we can flatten the array here if no special attributes are present
 #        return mess
-
-
-class MultiValue(Attribute):
-
-    ## MultiValues will never store data in themselves, so do not operate on
-    ## __class__.  For all intents and purposes, a MultiValue will be static
-    ## provided that the mess passed to devitalize is a list
-    def devitalize(self, mess):
-        primary = None
-        items = list()
-        for item in mess:
-            itemdict = dict()
-            for x in ['type', 'operation', 'display']:
-                if getattr(item, x):
-                    itemdict[x] = getattr(item, x)
-            if item.primary and not primary:
-                itemdict['primary'] = True
-                primary = True  # only a single one may be primary
-        Attribute.devitalize(self)
-
-
-class MultiValueValue(Attribute):
-    class Meta:
-        type = None
-        primary = False
-        value = None
-        operation = None
-        display = ''
-
-
-#class MultiValueValue():
+#
+#
+#class Complex(Attribute, collections.MutableMapping):
 #    """
-#    A value in a multi-value attribute
+#    A complex attribute comprising of many singular attributes
 #    """
 #
-#    def __init__(self, value, **kwargs):
-#        """
-#        Initializes MultiValueValue with any kwargs sent
-#        """
-#        self.value = value
-#        for key, val in kwargs:
-#            if hasattr(MultiValueValue, key):
-#                setattr(self, key, val)
+#    def devitalize(self, mess):
+#        ## a complex holds its attributes as members
+#        items = dict()
+#        for name, master in inspect.getmembers(self.__class__):
+#            attr = self.__dict__.get(name)
+#            if attr is None:
+#                continue
+#            try:
+#                items[master._meta.name] = attr.devitalize()
+#                continue
+#            except AttributeError:
+#                # its not an attribute object
+#                pass
 #
-#    def devitalize(self, primary=None):
-#        """
-#        Devitalizes the value into an array for preparation
-#        """
-#        shrivled = dict()
-#        for prop in ['type', 'display', 'operation']:
-#            shrivled[prop] = getattr(self, prop)
-#        if primary:
-#            shrivled['primary'] = primary
-#        try:
-#            shrivled['value'] = self.value.devitalize()
-#        except AttributeError:
-#            shrivled['value'] = self.value
-#        return shrivled
+#            try:
+#                # is it a list of items?
+#                flattened = []
+#                for item in attr:
+#                    flattened.append(item.devitalize())
+#                items[master._meta.name] = flattened
+#            except TypeError:
+#                # Its not a list of items
+#                # This should technically never happen
+#                raise
+#            except AttributeError:
+#                # it is a list of items, but those items are not attribute objects
+#                items[master._meta.name] = attr
+#        return items
 #
-#    ## The type of attribute.
-#    ## Ex for phones: work, home, mobile, etc.
-#    type = None
 #
-#    ## The value of the attribute
-#    ## Ex for phones: the phone number itself
-#    value = None
+#class MultiValue(Attribute):
 #
-#    ## A read-only human readable version of the value
-#    display = None
+#    ## MultiValues will never store data in themselves, so do not operate on
+#    ## __class__.  For all intents and purposes, a MultiValue will be static
+#    ## provided that the mess passed to devitalize is a list
+#    def devitalize(self, mess):
+#        primary = None
+#        items = list()
+#        for item in mess:
+#            itemdict = dict()
+#            for x in ['type', 'operation', 'display']:
+#                if getattr(item, x):
+#                    itemdict[x] = getattr(item, x)
+#            if item.primary and not primary:
+#                itemdict['primary'] = True
+#                primary = True  # only a single one may be primary
+#        Attribute.devitalize(self)
 #
-#    ## The operation to be performed during a PATCH request.
-#    ## The only value supported here is 'delete'
-#    operation = None
+#
+#class MultiValueValue(Attribute):
+#    class Meta:
+#        type = None
+#        primary = False
+#        value = None
+#        operation = None
+#        display = ''
