@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" \file scim/schema/attributes.py
+""" \file scim/attributes.py
 \brief Defines the different types of attributes.
 
 \author Erich Healy (CactusCommander) ErichRHealy@gmail.com

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-""" \file "scim/client/user.py"
-\brief "Provides ways of interacting with a user endpoint"
+""" \file "scim/user.py"
+\brief "Provides schemas and methods needed to interact with a User endpoint"
 
 \author Erich Healy (CactusCommander) ErichRHealy@gmail.com
 

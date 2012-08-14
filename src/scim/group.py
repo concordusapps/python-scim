@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" \file "scim/schema/core.py"
+""" \file "scim/core.py"
 \brief "Defines the core scim schema and all its attributes"
 
 \author Erich Healy (CactusCommander) ErichRHealy@gmail.com
