@@ -41,6 +41,9 @@ class Core(Schema):
         The complex attribute for metadata
         """
 
+        class Meta:
+            name = 'meta'
+
         ## The time that this entity was created
         created = Singular('created')
 
@@ -75,8 +78,15 @@ class Core(Schema):
         """
         Special case attribute for the core schema
         """
-        members = []
-        ## TODO: re-imlement the accessors
-        pass
+
+        def devitalize(self, mess):
+            return mess
 
     schemas = SchemaAttribute('schemas')
+
+    def __init__(self):
+        """
+        Add entries to schema listing
+        """
+        # add core schema specification to our schema listing
+        self.schemas = ['urn:scim:schemas:core:1.0']

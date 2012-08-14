@@ -1,13 +1,12 @@
 
+from .attributes import Complex
+import inspect
 
-class Schema():
+
+class Schema(Complex):
     """
     This defines the base class for all schemas
     """
-
-    def encode(self):
-        """Exports a schema into an array"""
-        pass
 
 
 class Extension(Schema):
