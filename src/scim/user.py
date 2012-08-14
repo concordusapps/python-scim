@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ \file "scim/user.py"
-\brief "Provides schemas and methods needed to interact with a User endpoint"
+\brief "Provides schemas and methods needed to interact with a Users endpoint"
 
 \author Erich Healy (CactusCommander) ErichRHealy@gmail.com
 
