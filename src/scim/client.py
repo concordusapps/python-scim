@@ -1,4 +1,7 @@
 import requests
+import abc
+import json
+
 
 
 class Request(object):
@@ -8,7 +11,11 @@ class Request(object):
     ## Verbs supported by the request object
     supported_verbs = []
 
-    def __init__(self, **kwargs):
+    ## Encoding formats supported by the request object
+    # TODO: add more
+    supported_encodings = ['json']
+
+    def __init__(self, verb, url, data, encoding='json'):
         """set random default arguments
         \var verb
             The type of method, ex: GET, POST, PUT, etc.
@@ -20,49 +27,46 @@ class Request(object):
         \var data
             The schema object to send to the server
 
-        \var format
+        \var encoding
             The format to send data to the server.  Ex: xml, json
             Valid parameters: json
             More formats will be added in the future
         """
-        for key, value in kwargs.items():
-            if not key in ['verb', 'url', 'data', 'format']:
-                raise ValueError('Invalid argument: {}'.format(key))
-            setattr(self, key, value)
+        # verify verb
+        assert(verb in self.supported_verbs)
+        assert(encoding in self.supported_encodings)
+        self.verb = verb
+        self.url = url
+        self.data = data
+        self.encoding = encoding
 
-    def ready(self):
-        """Returns true if object is ready to be sent, raises otherwise.
-        TODO: Its weird that it raises on failure, consider other ways of
-        preparation
+    def prep_url(self):
+        """overridable method to allow extra decoration of url
         """
-        for item in ['verb', 'url', 'data', 'format']:
-            if not item in self.__dict__:
-                raise AssertionError('Missng required data: {}'.format(item))
-        verb = self.verb.lower()
-        if not verb in self.supported_verbs:
-            raise AssertionError('Unsupported verb: {}'.format(verb))
-        # verify format:
-        if not self.format.lower() in ['json']:
-            raise AssertionError('Unsupported encoding format: {}'.format(self.format))
-        return True
+        return self.url
 
     @staticmethod
-    def serialize(cls, data):
+    @abc.abstractmethod
+    def serialize(data):
         # TODO: serialize data using an encoder based on self.format
         pass
 
     @staticmethod
-    def deserialize(cls, data):
+    @abc.abstractmethod
+    def deserialize(data):
         # TODO: deserialize data using an decoder based on self.format
         pass
 
     def send(self):
         """Send the request
         """
-        # Make sure we're ready
-        self.ready()
         data = self.serialize(self.data)
-        response = getattr(requests, self.verb)(self.url, data=data)
+
+        # requests object has methods named get, post, etc.
+        # fetch method and call it
+        response = getattr(
+            requests,
+            self.verb)(self.prep_url(), data=data)
 
         # Raise if the request went south
         # TODO: scim response codes are not all bad even if they are not in the
@@ -70,7 +74,4 @@ class Request(object):
         # response.status_code
         response.raise_for_status()
 
-        # todo, deserialize based on response type
-        # Create response object
-        self.response = type(self.data)
-        self.response.deserialize(response.text)
+        self.response = self.deserialize(response.text)
