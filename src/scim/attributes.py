@@ -103,18 +103,24 @@ class Complex(Attribute):
         """BANANA"""
         return cls._serialize(inspect.getmembers(cls), obj)
 
+    @staticmethod
+    def _deserialize(members, data):
+        values = {}
+        for name, value in members:
+            if isinstance(value, Attribute) and hasattr(value, '_name'):
+                if value._name in data:
+                    values[name] = value.deserialize(data[value._name])
+
+        return values
+
     @classmethod
     def deserialize(cls, data):
         """BANANA"""
         instance = cls()
-        for name, value in inspect.getmembers(cls):
-            if isinstance(value, Attribute) and hasattr(value, '_name'):
-                if value._name in data:
-                    setattr(
-                        instance,
-                        name,
-                        value.deserialize(data[value._name])
-                    )
+        instance.__dict__.update(Complex._deserialize(
+            inspect.getmembers(cls),
+            data
+        ))
 
         return instance
 
@@ -143,7 +149,7 @@ class MultiValue(Complex):
 
     ## The operation to perform on the multi-valued attribute during
     ## a PATCH request.
-    operation = Singular("type")
+    operation = Singular("operation")
 
     ## The value of the specific attribute
     value = Singular("value")
@@ -177,4 +183,30 @@ class MultiValue(Complex):
     @classmethod
     def deserialize(cls, data):
         """BANANA"""
-        pass
+        values = []
+        for item in data:
+            instance = cls()
+            instance.__dict__.update(
+                Complex._deserialize(inspect.getmembers(MultiValue), item)
+            )
+
+            try:
+                # Pretend that we know this has stuff
+                instance.__dict__.update(
+                    Complex._deserialize(cls.__dict__.items(),
+                        item if item['value'] is None else item['value']
+                    )
+                )
+
+            except:
+                # This is likely a scalar or garbage
+                instance.__dict__.update(
+                    Complex._deserialize([("value", MultiValue.value)],
+                        {"value": item}
+                    )
+                )
+
+            values.append(instance)
+
+        return values
+
