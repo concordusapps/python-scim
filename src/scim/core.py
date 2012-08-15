@@ -26,59 +26,63 @@
            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
            SOFTWARE.
 """
-
 from . import attributes
-from .attributes import Singular, Complex
 
 
-class Core(Complex):
+## Core SCIM schema identifier.
+SCHEMA = 'urn:scim:schemas:core:1.0'
+
+
+class Core(attributes.Complex):
+    """Defines the core scim schema.
     """
-    Defines the core scim schema
-    """
-    class Metadata(Complex):
-        """
-        The complex attribute for metadata
+
+    class Metadata(attributes.Complex):
+        """The complex attribute for metadata.
         """
 
         class Meta:
             name = 'meta'
 
-        ## The time that this entity was created
-        created = Singular('created')
+        ## The time that this entity was created.
+        created = attributes.Singular('created')
 
-        ## The last time this entity was modified
-        modified = Singular('lastModified')
+        ## The last time this entity was modified.
+        modified = attributes.Singular('lastModified')
 
-        ## Simply the url that is being accessed during this request
-        url = Singular('location')
+        ## Simply the url that is being accessed during this request.
+        location = attributes.Singular('location')
 
-        ## Version of the attribute being returned.  This value should also be
-        ## in the HTTP header during the response
-        version = Singular('version')
+        ## Version of the attribute being returned. This value should also be
+        ## in the HTTP header during the response.
+        version = attributes.Singular('version')
 
-        ## Attributes that need to be removed during a PATCH request
-        delete = Singular('attributes')
+        ## Attributes that need to be removed during a PATCH request.
+        delete = attributes.Singular('attributes')
 
-    ## The external primary key for the resource being accessed
-    id = Singular('id')
+    ## The external primary key for the resource being accessed.
+    id = attributes.Singular('id')
 
     ## The internal primary key for the resource being accessed.  if set,
     ## forces the foreign endpoint to provide mapping between the external id
-    ## and their internal id
-    external_id = Singular('externalId')
+    ## and their internal id.
+    external_id = attributes.Singular('externalId')
 
-    ## Metadata present during a request
-    meta = Metadata('meta')
+    ## Metadata present during a request.
+    meta = Metadata()
 
     ## The schemas attribute is a special case scenario which looks like it
     ## should be a multi-value attribute, but is actually simply a list of
-    ## strings containing the schemas implemented in the request or response
-    schemas = Singular('schemas')
+    ## strings containing the schemas implemented in the request or response.
+    schemas = attributes.Singular('schemas')
 
     def __init__(self, *args, **kwargs):
-        """
-        Add entries to schema listing
-        """
+        """Construct this; ensure the core schema is present in schemas."""
+        # Append the Core schema to the (perhaps provided) list of schemas
+        if 'schemas' in kwargs:
+            kwargs.append(SCHEMA)
+        else:
+            kwargs['schemas'] = [SCHEMA]
+
+        # Forward off to be constructed
         super(Core, self).__init__(*args, **kwargs)
-        # add core schema specification to our schema listing
-        self.schemas = ['urn:scim:schemas:core:1.0']
