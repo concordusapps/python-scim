@@ -106,7 +106,17 @@ class Complex(Attribute):
     @classmethod
     def deserialize(cls, data):
         """BANANA"""
-        pass
+        instance = cls()
+        for name, value in inspect.getmembers(cls):
+            if isinstance(value, Attribute) and hasattr(value, '_name'):
+                if value._name in data:
+                    setattr(
+                        instance,
+                        name,
+                        value.deserialize(data[value._name])
+                    )
+
+        return instance
 
     def __init__(self, **kwargs):
         """BANANA"""
