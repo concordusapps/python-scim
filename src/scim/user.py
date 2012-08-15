@@ -137,9 +137,14 @@ class User(Core):
     ## Instant messaging address for the User.
     photos = Photo()
 
+    class Group(attributes.MultiValue):
+        """TODO"""
+        class Meta:
+            name = 'groups'
+
     ## A list of groups that the user belongs to, either thorough direct
     ## membership, nested groups, or dynamically calculated.
-    # groups =
+    groups = Group()
 
     class Role(attributes.MultiValue):
         """TODO"""
@@ -193,47 +198,6 @@ class User(Core):
 
     ## A physical mailing address for this User.
     addresses = Address()
-
-
-#class Enterprise(Extension):
-#    """
-#    Defines enterprise user extensions
-#    schema: urn:scim:schemas:extension:enterprise:1.0
-#    """
-#
-#    class Manager(Complex):
-#        """
-#        User's Manager's primary key and name
-#        """
-#
-#        class Meta:
-#            name = 'manager'
-#
-#        ## Primary Key for manager
-#        id = Singular('managerId')
-#
-#        ## Manager's name, for convenience purposes
-#        name = Singular('displayName')
-#
-#    ## User's Employee number
-#    employee_id = Singular('employeeNumber')
-#
-#    ## User's Cost Center (?)
-#    cost_center = Singular('costCenter')
-#
-#    ## Organization
-#    organization = Singular('organization')
-#
-#    ## Division of organizations
-#    division = Singular('division')
-#
-#    ## Department of division
-#    department = Singular('department')
-#
-#    ## User's manager
-#    # TODO: allow stuff like so:
-#    # x.enterprise.manager = Manager(id=32423, name="dsfsdf")
-#    manager = Manager('manager')
 
 
 def get(endpoint, identifier):
