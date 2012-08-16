@@ -1,4 +1,5 @@
 from scim import user
+from scim import usertest
 
 u = user.User(
     name=user.User.Name(
