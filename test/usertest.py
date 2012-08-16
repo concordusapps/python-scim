@@ -56,7 +56,7 @@ class JSONTestCase(unittest.TestCase):
                 formatted="456 Hollywood Blvd Hollywood, CA 91608 USA"
             )
         ]
-        self.u.PhoneNumber = [
+        self.u.phones = [
             user.User.PhoneNumber(
                 value="555-555-5555",
                 type='work'
@@ -66,13 +66,13 @@ class JSONTestCase(unittest.TestCase):
                 type='mobile'
             )
         ]
-        self.u.Messanger = [
+        self.u.messengers = [
             user.User.Messanger(
                 value='someaimhandle',
                 type='aim'
             )
         ]
-        self.u.Photo = [
+        self.u.photos = [
             user.User.Photo(
                 value='https://photos.example.com/profilephoto/72930000000Ccne/F',
                 type='photo'
@@ -118,7 +118,7 @@ class JSONTestCase(unittest.TestCase):
         )
         self.u.id="2819c223-7f76-453a-919d-413861904646"
         self.u.external_id="701984"
-        self.testJson = """{"userName": "bjensen@example.com", "displayName": "Babs Jensen", "addresses": [{"type": "work", "primary": true, "value": {"postalCode": "91608", "country": "USA", "region": "CA", "streetAddress": "100 Universal City Plaza", "locality": "Hollywood"}}, {"type": "home", "value": {"locality": "Hollywood", "country": "USA", "region": "CA", "formatted": "456 Hollywood Blvd Hollywood, CA 91608 USA", "streetAddress": "456 Hollywood Blvd", "postalCode": "91608"}}], "title": "Tour Guide", "x509Certificates": [{"value": "333"}], "schemas": ["urn:scim:schemas:core:1.0"], "id": "2819c223-7f76-453a-919d-413861904646", "profileUrl": "https://login.example.com/bjensen", "preferredLanguage": "en_US", "meta": {"lastModified": "2011-05-13T04:42:34Z", "version": "1", "location": "https://example.com/v1/Users/2819c223-7f76-453a-919d-413861904646", "created": "2010-01-23T04:56:22Z"}, "externalId": "701984", "groups": [{"display": "Tour Guides", "value": "00300000005N2Y6AA"}, {"display": "Employees", "value": "00300000005N34H78"}, {"display": "US Employees", "value": "00300000005N98YT1"}], "timezone": "America/Los_Angeles", "locale": "en_US", "password": "t1meMa$heen", "nickName": "Babs", "emails": [{"type": "work", "primary": true, "value": "bejensen@example.com"}, {"type": "home", "value": "babs@jensen.org"}], "userType": "Employee", "name": {"honorificPrefix": "Ms.", "middleName": "Jane", "familyName": "Jensen", "formatted": "Ms. Barbara J Jensen III", "givenName": "Barbara", "honorificSuffix": "III"}}"""
+        self.testJson = """{"phoneNumbers": [{"type": "work", "value": "555-555-5555"}, {"type": "mobile", "value": "444-444-4444"}], "addresses": [{"type": "work", "primary": true, "value": {"postalCode": "91608", "country": "USA", "region": "CA", "streetAddress": "100 Universal City Plaza", "locality": "Hollywood"}}, {"type": "home", "value": {"locality": "Hollywood", "country": "USA", "region": "CA", "formatted": "456 Hollywood Blvd Hollywood, CA 91608 USA", "streetAddress": "456 Hollywood Blvd", "postalCode": "91608"}}], "x509Certificates": [{"value": "333"}], "userType": "Employee", "meta": {"lastModified": "2011-05-13T04:42:34Z", "version": "1", "location": "https://example.com/v1/Users/2819c223-7f76-453a-919d-413861904646", "created": "2010-01-23T04:56:22Z"}, "timezone": "America/Los_Angeles", "id": "2819c223-7f76-453a-919d-413861904646", "schemas": ["urn:scim:schemas:core:1.0"], "title": "Tour Guide", "preferredLanguage": "en_US", "locale": "en_US", "ims": [{"type": "aim", "value": "someaimhandle"}], "externalId": "701984", "nickName": "Babs", "photos": [{"type": "photo", "value": "https://photos.example.com/profilephoto/72930000000Ccne/F"}, {"type": "thumbnail", "value": "https://photos.example.com/profilephoto/72930000000Ccne/T"}], "groups": [{"display": "Tour Guides", "value": "00300000005N2Y6AA"}, {"display": "Employees", "value": "00300000005N34H78"}, {"display": "US Employees", "value": "00300000005N98YT1"}], "password": "t1meMa$heen", "emails": [{"type": "work", "primary": true, "value": "bejensen@example.com"}, {"type": "home", "value": "babs@jensen.org"}], "userName": "bjensen@example.com", "displayName": "Babs Jensen", "name": {"honorificPrefix": "Ms.", "middleName": "Jane", "familyName": "Jensen", "formatted": "Ms. Barbara J Jensen III", "givenName": "Barbara", "honorificSuffix": "III"}, "profileUrl": "https://login.example.com/bjensen"}"""
 
     def runTest(self):
         
