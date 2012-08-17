@@ -26,7 +26,7 @@
            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
            SOFTWARE.
 """
-from . import attributes
+from scim import attributes
 
 
 ## Core SCIM schema identifier.

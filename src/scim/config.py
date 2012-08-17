@@ -31,9 +31,6 @@ from . import attributes
 from .core import Core
 
 
-endpoint_format = '{}/Config/{}'
-
-
 class Config(Core):
     """Defines the schema mapping configuration.
     """

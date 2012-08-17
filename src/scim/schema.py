@@ -27,8 +27,8 @@
            SOFTWARE.
 """
 import requests
-from . import attributes
-from .core import Core
+from scim import attributes
+from core import Core
 
 
 endpoint_format = '{}/Schema/{}'
@@ -36,17 +36,25 @@ endpoint_format = '{}/Schema/{}'
 
 class Schema(Core):
     """Defines the schema mapping configuration.
+
+    TODO: Remove excessive duplication.
     """
 
-    class CommonAttributes(object):
-        """Common attributes in the Schema
+    ## The attribute's or resource's name.
+    name = attributes.Singular('name')
+
+    ## The attribute's or resource's human readable description.
+    description = attributes.Singular('description')
+
+    class Attributes(attributes.MultiValue):
+        """A complex type that specifies the set of Resource attributes.
         """
+
+        class Meta:
+            name = 'attributes'
 
         ## The attribute's or resource's name.
         name = attributes.Singular('name')
-
-        ## The attribute's or resource's data type.
-        type = attributes.Singular('type')
 
         ## The attribute's or resource's human readable description.
         description = attributes.Singular('description')
@@ -62,13 +70,6 @@ class Schema(Core):
 
         ## The attribute's or resource's associated schema.
         schema = attributes.Singular('schema')
-
-    class Attributes(attributes.Complex, CommonAttributes):
-        """A complex type that specifies the set of Resource attributes.
-        """
-
-        class Meta:
-            name = 'attributes'
 
         ## Boolean value indicating the attribute's plurality.
         multi_valued = attributes.Singular('multiValued')
@@ -86,7 +87,22 @@ class Schema(Core):
             class Meta:
                 name = 'subAttributes'
 
-            ## A collection of canonical values. When applicable Service
+            ## The attribute's or resource's name.
+            name = attributes.Singular('name')
+
+            ## The attribute's or resource's human readable description.
+            description = attributes.Singular('description')
+
+            ## A Boolean value that specifies if the attribute is mutable.
+            read_only = attributes.Singular('readOnly')
+
+            ## A Boolean value that specifies if the attribute is required.
+            required = attributes.Singular('required')
+
+            ## A Boolean that specifies if the String attribute is case sensitive.
+            case_exact = attributes.Singular('caseExact')
+
+            ## When applicable Service
             ## Providers MUST specify the canonical types specified in the core
             ## schema specification.
             canonical_values = attributes.Singular('canonicalValues')

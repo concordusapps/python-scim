@@ -1,6 +1,7 @@
 import usertest
 import configtest
 import unittest
+import schematest
 
 
 def suite():
@@ -10,6 +11,7 @@ def suite():
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(configtest.ConfigTestCase))
     test_suite.addTest(unittest.makeSuite(usertest.UserTestCase))
+    test_suite.addTest(unittest.makeSuite(schematest.SchemaTestCase))
     return test_suite
 
 
