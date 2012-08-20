@@ -5,7 +5,7 @@ _A python interface to produce and consume System for Cross-domain Identity Mana
 Features
 --------
  - __SCIM conformance__ <br />
-   python-scm conforms to the latest SCIM standards.
+   python-scim conforms to the latest SCIM standards.
 
  - __Environment agnostic__ <br />
    python-scim may be used to produce and consume SCIM messages regardless
