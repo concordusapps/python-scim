@@ -1,13 +1,6 @@
-from scim import user
-from scim import core
-from scim import group
-from scim import attributes
 from scim import config
-#import usertest
 import unittest
 import json
-
-
 
 
 class ConfigTestCase(unittest.TestCase):
@@ -74,6 +67,4 @@ def suite():
     """
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(ConfigTestCase))
-    test_suite.addTest(unittest.makeSuite(usertest.UserTestCase))
     return test_suite
-

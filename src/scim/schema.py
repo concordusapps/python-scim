@@ -90,7 +90,7 @@ class Schema(Core):
             ## The attribute's or resource's name.
             name = attributes.Singular('name')
 
-            ## The attribute's or resource's human readable description.
+            ## The attribute's or reenterprise.Enterprise.Schema.Managersource's human readable description.
             description = attributes.Singular('description')
 
             ## A Boolean value that specifies if the attribute is mutable.

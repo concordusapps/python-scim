@@ -1,12 +1,6 @@
-from scim import user
-from scim import core
-from scim import group
-from scim import attributes
 from scim import schema
 import unittest
 import json
-
-
 
 
 class SchemaTestCase(unittest.TestCase):
