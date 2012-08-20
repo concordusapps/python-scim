@@ -3,7 +3,7 @@ from scim import core
 from scim import group
 from scim import attributes
 from scim import config
-import usertest
+#import usertest
 import unittest
 import json
 
