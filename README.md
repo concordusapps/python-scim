@@ -16,14 +16,9 @@ Dependencies
 ### Build
 
 ### Runtime
- - __[lxml][]__ <br />
-   The lxml library is used for consuming and producing SCIM messages
-   as XML.
-
  - __[requests][]__ <br />
    The requests library is used to make outgoing requests to a SCIM endpoint
 
-[lxml]: http://pypi.python.org/pypi/lxml/
 [requests]: http://pypi.python.org/pypi/requests/
 
 License
