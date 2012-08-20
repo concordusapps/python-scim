@@ -33,11 +33,11 @@ from . import attributes
 from .core import Core
 
 
-class Enterprise(user.User):
+class Enterprise(object):
     """Defines the Enterprise User
     """
 
-    class Schema(attributes.Complex):
+    class Enterprise(attributes.Complex):
 
         class Meta:
             name = 'urn:scim:schemas:extension:enterprise:1.0'
@@ -72,4 +72,10 @@ class Enterprise(user.User):
 
         manager = Manager()
 
-    schema = Schema()
+    enterprise = Enterprise()
+
+
+class EnterpriseUser(user.User, Enterprise):
+    """Defines the Enterprise User
+    """
+    pass
