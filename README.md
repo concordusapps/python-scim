@@ -1,7 +1,7 @@
 # python-scim
 > A python interface to produce and consume System for Cross-domain Identity Management (SCIM) messages.
 
-### Features
+## Features
  - **SCIM conformance**
  
    python-scim conforms to the latest [SCIM][] (v1.1) standards.
@@ -13,9 +13,9 @@
    python-scim may be used to produce and consume SCIM messages regardless of the environment (terminal, WSGI, django) used to call it.
 
 
-### Installation
+## Installation
 
-#### Automated
+### Automated
 
 1. **python-scim** is not yet listed on [PyPI](https://pypi.python.org/pypi/)
    but can be installed by directly referencing its git url with `pip`
@@ -25,7 +25,7 @@
    pip install git+git://github.com/concordusapps/python-scim.git
    ```
 
-###  License
+##  License
 Unless otherwise noted, all files contained within this project are liensed under the MIT opensource license. See the included file LICENSE or visit [opensource.org][] for more information.
 
 [opensource.org]: http://opensource.org/licenses/MIT
