@@ -12,6 +12,19 @@
   
    python-scim may be used to produce and consume SCIM messages regardless of the environment (terminal, WSGI, django) used to call it.
 
+
+### Installation
+
+#### Automated
+
+1. **python-scim** is not yet listed on [PyPI](https://pypi.python.org/pypi/)
+   but can be installed by directly referencing its git url with `pip`
+   or `easy_install`.
+
+   ```sh
+   pip install git+git://github.com/concordusapps/python-scim.git
+   ```
+
 ###  License
 Unless otherwise noted, all files contained within this project are liensed under the MIT opensource license. See the included file LICENSE or visit [opensource.org][] for more information.
 
