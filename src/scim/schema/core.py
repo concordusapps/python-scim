@@ -26,7 +26,7 @@ class Metadata(attributes.Base):
     version = attributes.Singular(types.String)
 
     #! The names of the attributes to remove during a PATCH operation.
-    # attributes = attributes.List(types.String)
+    attributes = attributes.List(types.String)
 
 
 class Base(attributes.Base):

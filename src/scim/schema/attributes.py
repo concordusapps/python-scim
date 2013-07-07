@@ -2,6 +2,7 @@
 import collections
 import json
 import re
+from .types import Boolean, String
 
 
 def camelize(name):
@@ -67,7 +68,7 @@ class Base(metaclass=Declarative):
         #! Whether to ensure the element is inserted last of not.
         self._last = last
 
-    def serialize(self):
+    def serialize(self, obj=None):
         # Serialize the data in the instance state to the representation
         # specified (only JSON supported as of now).
         data = collections.OrderedDict()
@@ -238,3 +239,183 @@ class Complex(Base):
     def deserialize(self, text):
         if text is not None:
             return super().deserialize(text, instance=self.type())
+
+
+class BaseList(collections.MutableSequence):
+
+    def __init__(self, type_, name, convert):
+        # Turn the instance state into states.
+        self._states = []
+
+        #! Conversion method.
+        self.convert = convert
+
+        #! The underyling attribute.
+        self.type = type_
+        if isinstance(type_, type):
+            # Instantiate the type reference with no parameters.
+            self.type = type_()
+
+        #! The underyling name of this.
+        self.name = name
+
+    def insert(self, index, value):
+        self._states.insert(index, self.convert(value))
+
+    def __getitem__(self, index):
+        return self._states[index]
+
+    def __setitem__(self, index, value):
+        self._states[index] = self.convert(value)
+
+    def __delitem__(self, index):
+        del self._states[index]
+
+    def __len__(self):
+        return len(self._states)
+
+    def __contains__(self, value):
+        return value in self._states
+
+
+class List(Complex):
+
+    def __init__(self, type_, convert=lambda x: x, *args, **kwargs):
+        # Continue initialization.
+        super().__init__(None, *args, **kwargs)
+
+        #! The underyling type of the attribute.
+        self.type = lambda: BaseList(type_, self.name, convert)
+
+    def serialize(self, obj):
+        # Grab the data object to serialize.
+        if self.name in obj._state:
+            obj = obj._state[self.name]
+
+        else:
+            # No data to serialize.
+            return
+
+        # Serialize the data in the instance state to the representation
+        # specified (only JSON supported as of now).
+        data = []
+        for value in obj:
+            value = obj.type.serialize(value)
+            if value:
+                data.append(value)
+
+        # Return the serialized data.
+        return data
+
+    def deserialize(self, text):
+        if isinstance(text, str):
+            # Decode the data dictionary from JSON.
+            text = json.loads(text)
+
+        if not text:
+            # Return nothing if we got nothing.
+            return None
+
+        # Construct an instance.
+        instance = self.type()
+
+        # Iterate through values and reconstruct the state.
+        instance.extend(text)
+
+        # Return the constructed instance.
+        return instance
+
+
+class BaseMultiValue(Base):
+
+    #! A label indicating the attribute's function; e.g., "work" or "home".
+    type = Singular(String)
+
+    #! A Boolean value indicating the 'primary' or preferred attribute value
+    #! for this attribute, e.g. the preferred mailing address or
+    #! primary e-mail address. The primary attribute value 'true' MUST
+    #! appear no more than once.
+    primary = Singular(Boolean)
+
+    #! A human readable name, primarily used for display purposes.
+    display = Singular(String)
+
+    #! The operation to perform on the multi-valued attribute during
+    #! a PATCH request. The only valid value is "delete", which
+    #! signifies that this instance should be removed from the Resource.
+    operation = Singular(String)
+
+    #! The attribute's significant value; e.g., the e-mail address,
+    #! phone number, etc. Attributes that define a "value" sub-attribute
+    #! MAY be alternately represented as a collection of primitive types.
+    value = None
+
+    def serialize(self):
+        # Serialize the data in the instance state to the representation
+        # specified (only JSON supported as of now).
+        data = collections.OrderedDict()
+        for name, attr in self._attributes.items():
+            value = attr.serialize(self)
+            if value:
+                data[name] = value
+
+        # Return the serialized data.
+        return data
+
+
+class MultiValue(List):
+
+    def _convert(self, value):
+        if type(value) != self.attribute:
+            obj = self.attribute()
+            obj.value = value
+            value = obj
+
+        return value
+
+    def __init__(self, type_=Singular(String), *args, **kwargs):
+        #! The type of the value attring.
+        self.attribute = type_ = type(
+            'Value', (BaseMultiValue,), {'value': type_})
+
+        # Continue initialization.
+        super().__init__(type_, convert=self._convert, *args, **kwargs)
+
+    def serialize(self, obj):
+        # Grab the data object to serialize.
+        if self.name in obj._state:
+            obj = obj._state[self.name]
+
+        else:
+            # No data to serialize.
+            return
+
+        # Serialize the data in the instance state to the representation
+        # specified (only JSON supported as of now).
+        data = []
+        for value in obj:
+            value = value.serialize()
+            if value:
+                data.append(value)
+
+        # Return the serialized data.
+        return data
+
+    def deserialize(self, text):
+        if isinstance(text, str):
+            # Decode the data dictionary from JSON.
+            text = json.loads(text)
+
+        if not text:
+            # Return nothing if we got nothing.
+            return None
+
+        # Construct an instance.
+        instance = self.type()
+
+        # Iterate through values and reconstruct the state.
+        for value in text:
+            instance.append(self.attribute.deserialize(value))
+
+        # Return the constructed instance.
+        return instance
