@@ -39,9 +39,9 @@ class Declarative(type):
                 attrs['_attributes'][attr.name] = attr
 
         # Collect schemas names from base classes.
-        attrs['_schemas'] = schemas = []
+        attrs['schemas'] = schemas = []
         for base in bases:
-            values = getattr(base, '_schemas', None)
+            values = getattr(base, 'schemas', None)
             if values:
                 schemas.extend(values)
 
@@ -72,9 +72,6 @@ class Base(metaclass=Declarative):
         # Serialize the data in the instance state to the representation
         # specified (only JSON supported as of now).
         data = collections.OrderedDict()
-
-        # Insert the schemas list.
-        data['schemas'] = self._schemas
 
         # Iterate through the non-last declared attributes.
         for name, attr in self._attributes.items():
