@@ -93,8 +93,8 @@ class Base(metaclass=Declarative):
                 if value:
                     data[name] = value
 
-        # Encode the data dictionary as JSON.
-        return json.dumps(data)
+        # Return the data dictionary.
+        return data
 
     @classmethod
     def deserialize(cls, text, instance=None):
