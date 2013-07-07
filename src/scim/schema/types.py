@@ -22,11 +22,10 @@ class Boolean(Base):
     """
 
     def serialize(self, value):
-        return 'true' if value else 'false'
+        return value
 
     def deserialize(self, text):
-        if text is not None:
-            return text == 'true'
+        return text
 
 
 class Decimal(Base):
