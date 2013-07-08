@@ -49,7 +49,7 @@ class Base(attributes.Base):
     #!
     #! The value of the id attribute is always issued by the Service Provider
     #! and MUST never be specified by the Service Consumer.
-    id = attributes.Singular(types.Integer, required=True)
+    id = attributes.Singular(types.String, required=True)
 
     #! An identifier for the Resource as defined by the Service Consumer.
     #!
@@ -58,7 +58,7 @@ class Base(attributes.Base):
     #! refer to the Resource with its own identifier, obviating the need to
     #! store a local mapping between the local identifier of the Resource and
     #! the identifier used by the Service Provider.
-    external_id = attributes.Singular(types.Integer)
+    external_id = attributes.Singular(types.String)
 
     #! A complex attribute containing resource metadata.
     meta = attributes.Complex(Metadata, last=True)
