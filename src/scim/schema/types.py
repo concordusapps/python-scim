@@ -5,7 +5,7 @@ from dateutil.parser import parse as parse_datetime
 class Base:
 
     def serialize(self, value):
-        return str(value)
+        return str(value) if value is not None else None
 
     def deserialize(self, text):
         if text is not None:
@@ -53,7 +53,7 @@ class DateTime(Base):
     """
 
     def serialize(self, value):
-        return value.isoformat()
+        return value.isoformat() if value is not None else None
 
     def deserialize(self, text):
         if text is not None:
