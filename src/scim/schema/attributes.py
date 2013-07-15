@@ -80,14 +80,14 @@ class Base(metaclass=Declarative):
                 continue
 
             value = attr.serialize(self)
-            if value:
+            if value is not None:
                 data[name] = value
 
         # Iterate through the last declared attributes.
         for name, attr in self._attributes.items():
             if attr._last:
                 value = attr.serialize(self)
-                if value:
+                if value is not None:
                     data[name] = value
 
         # Return the data dictionary.
@@ -353,7 +353,7 @@ class BaseMultiValue(Base):
         data = collections.OrderedDict()
         for name, attr in self._attributes.items():
             value = attr.serialize(self)
-            if value:
+            if value is not None:
                 data[name] = value
 
         # Return the serialized data.
@@ -392,7 +392,7 @@ class MultiValue(List):
         data = []
         for value in obj:
             value = value.serialize()
-            if value:
+            if value is not None:
                 data.append(value)
 
         # Return the serialized data.
