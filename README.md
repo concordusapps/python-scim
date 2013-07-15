@@ -9,7 +9,7 @@ python-scim conforms to the latest [SCIM][] (v1.1) standards.
 
 [SCIM]: http://www.simplecloud.info/
 
- ##### Environment agnostic
+##### Environment agnostic
 
 python-scim may be used to produce and consume SCIM messages regardless of the environment (terminal, WSGI, django) used to call it.
 
