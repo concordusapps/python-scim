@@ -3,6 +3,7 @@
 !.editorconfig
 !.gitattributes
 !.gitignore
+!.travis*
 
 # Python
 /dist

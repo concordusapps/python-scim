@@ -1,0 +1,11 @@
+language: python
+python:
+  - '3.3'
+
+install:
+  - 'travis_retry pip install -q -e ".[test]" --use-mirrors'
+  - 'travis_retry pip install coveralls --use-mirrors'
+
+script: 'py.test --pep8 --cov scim'
+
+after_success: 'coveralls'
