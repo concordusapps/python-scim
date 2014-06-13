@@ -25,3 +25,7 @@ class Tenant(Base):
 
     #! A Boolean value indicating the tenant's administrative status.
     active = attributes.Singular(types.Boolean)
+
+    #! A list of entitlements for the Tenant that represent
+    # a thing the Tenant has.
+    entitlements = attributes.MultiValue()
